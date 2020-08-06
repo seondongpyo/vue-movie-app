@@ -34,12 +34,21 @@ export default {
         }
     },
     methods: {
-        searchMovies () {
-            console.log('searchMovies');
-            axios.get(`http://www.omdbapi.com/?apikey=bdae121c&s=${this.title}`)
-                .then((response) => {
-                    console.log(response)
-                })
+        async searchMovies () {
+            // axios.get(`http://www.omdbapi.com/?apikey=bdae121c&s=${this.title}`)
+            //     .then((response) => {
+            //         console.log(response);
+            //     })
+
+            // await 함수가 실행되기 전에 로딩 애니메이션 실행
+            this.loading = true;
+
+            // async & await 사용하기
+            const res = await axios.get(`http://www.omdbapi.com/?apikey=bdae121c&s=${this.title}`)
+            console.log(res.data);
+
+            // await 함수가 종료되면 로딩 애니메이션 종료
+            this.loading = false;
         }
     }
 }
