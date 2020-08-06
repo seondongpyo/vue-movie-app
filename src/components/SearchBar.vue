@@ -24,32 +24,42 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { mapActions } from 'vuex'
 
 export default {
-    data () {
-        return {
-            title: '',
-            loading: false
+    // data () {
+    //     return {
+    //         title: '',
+    //         loading: false
+    //     }
+    // },
+    computed: {
+        // title () {
+        //     return this.$store.state.movie.title;   // error 발생 : 양방향 바인딩이 되어 있어서 값 입력 시 title이 movie.js 밖에서 수정되려고 함
+        //     // → setter를 지정해서 store의 mutation의 도움을 받아야 함
+        // },
+        title: {
+            get () {    // getter
+                return this.$store.state.movie.title;
+            },
+            set (newTitle) {    // setter
+                this.$store.commit('movie/updateState', {
+                    title: newTitle
+                });
+            }
+        },
+        loading () {
+            return this.$store.state.movie.loading;
         }
     },
     methods: {
-        async searchMovies () {
-            // axios.get(`http://www.omdbapi.com/?apikey=bdae121c&s=${this.title}`)
-            //     .then((response) => {
-            //         console.log(response);
-            //     })
+        // searchMovies () {
+        //     this.$store.dispatch('movie/searchMovies');
+        // }
 
-            // await 함수가 실행되기 전에 로딩 애니메이션 실행
-            this.loading = true;
-
-            // async & await 사용하기
-            const res = await axios.get(`http://www.omdbapi.com/?apikey=bdae121c&s=${this.title}`)
-            console.log(res.data);
-
-            // await 함수가 종료되면 로딩 애니메이션 종료
-            this.loading = false;
-        }
+        ...mapActions('movie', [
+            'searchMovies'
+        ])
     }
 }
 </script>
