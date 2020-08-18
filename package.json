@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test": "jest --watch"
+    "test": "jest --watchAll"
   },
   "dependencies": {
     "axios": "^0.19.2",
@@ -47,7 +47,12 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {},
+    "eslintConfig": {
+      "env": {
+        "jest": true
+      }
+    }
   },
   "browserslist": [
     "> 1%",
