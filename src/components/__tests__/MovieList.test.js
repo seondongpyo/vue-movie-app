@@ -36,5 +36,44 @@ describe('MovieList Component Test', () => {
 
     test('영화 제목 출력', () => {
         console.log(wrapper.html());
+        // find() : tag 선택자, wrapper 객체 반환
+        expect(wrapper.find('v-card-title-stub').text()).toBe('영화 제목');
+    });
+
+    test('개봉 연도 출력', () => {
+        expect(wrapper.find('v-card-subtitle-stub').text()).toBe('2020');
+    });
+
+    test('포스터 이미지 경로가 있는 경우', () => {
+        const img = wrapper.find('v-img-stub');
+        expect(img.attributes('src')).toBe('image.jpg');
+        expect(img.attributes('height')).toBe('300');
+    });
+
+    test('포스터 이미지 경로가 없는 경우', () => {
+        wrapper = shallowMount(MovieList, {
+            localVue,
+            vuetify,
+            mocks: {
+                $store: {
+                    state: {
+                        movie: {    
+                            movies: [
+                                {
+                                    imdbId: '123456',
+                                    Title: '영화 제목',
+                                    Poster: 'N/A',
+                                    Year: '2020'
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        });
+        
+        const img = wrapper.find('v-img-stub');
+        expect(img.attributes('src')).toBe('');
+        expect(img.attributes('height')).toBe('100');
     });
 });
