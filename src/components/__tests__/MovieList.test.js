@@ -35,7 +35,6 @@ describe('MovieList Component Test', () => {
     });
 
     test('영화 제목 출력', () => {
-        console.log(wrapper.html());
         // find() : tag 선택자, wrapper 객체 반환
         expect(wrapper.find('v-card-title-stub').text()).toBe('영화 제목');
     });
