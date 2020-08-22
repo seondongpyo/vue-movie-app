@@ -5,7 +5,8 @@ export default {
     state: () => ({
         title: '',
         loading: false,
-        movies: []
+        movies: [],
+        error: null
     }),
     getters: {
 
@@ -28,43 +29,50 @@ export default {
             //     resolve(res.data);
             // });
 
-            const searchResults = new Promise(resolve => {
-                axios.get(`http://www.omdbapi.com/?apikey=bdae121c&s=${state.title}&page=${pageNum}`)
-                    .then((res) => {
-                        commit('pushIntoMovies', res.data.Search);
-                        resolve(res.data);
-                    });
-            })
-
+            const searchResults = new Promise((resolve, reject) => {
+                try {
+                    axios.get(`http://www.omdbapi.com/?apikey=bdae121c&s=${state.title}&page=${pageNum}`)
+                        .then((res) => {
+                            commit('pushIntoMovies', res.data.Search);
+                            resolve(res.data);
+                        });
+                        
+                } catch (error) {
+                    reject(error);
+                }
+            });
+            
             return Promise.resolve(searchResults);
         },
         async searchMovies ({ commit, dispatch }) {
             commit('updateState', {
                 loading: true,
-                movies: []
+                movies: [],
+                error: null
             });
 
-            // const res = await axios.get(`http://www.omdbapi.com/?apikey=bdae121c&s=${state.title}&page=1`);
-            const { totalResults } = await dispatch('fetchMovies', 1);
-            const pageLength = Math.ceil(totalResults / 10);    // 전체 페이지 수 구하기
+            try {
+                // const res = await axios.get(`http://www.omdbapi.com/?apikey=bdae121c&s=${state.title}&page=1`);
+                const { totalResults } = await dispatch('fetchMovies', 1);
+                const pageLength = Math.ceil(totalResults / 10);    // 전체 페이지 수 구하기
 
-            // commit('updateState', {
-            //     movies: res.data.Search,
-            // });
+                if (pageLength > 1) {
+                    for (let i = 2; i <= pageLength; i++) {
+                        // 최대 40개까지의 데이터만 조회
+                        if (i > 4) {
+                            break;
+                        }
 
-            if (pageLength > 1) {
-                for (let i = 2; i <= pageLength; i++) {
-                    // 최대 40개까지의 데이터만 조회
-                    if (i > 4) {
-                        break;
+                        await dispatch('fetchMovies', i);
                     }
-
-                    // const resMore = await axios.get(`http://www.omdbapi.com/?apikey=bdae121c&s=${state.title}&page=${i}`);
-                    // commit('pushIntoMovies', resMore.data.Search);
-                    await dispatch('fetchMovies', i);
                 }
-            }
 
+            } catch (error) {
+                commit('updateState', {
+                    error: error
+                });
+            }
+            
             commit('updateState', {
                 loading: false
             });

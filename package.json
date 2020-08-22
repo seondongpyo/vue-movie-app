@@ -49,12 +49,7 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {},
-    "eslintConfig": {
-      "env": {
-        "jest": true
-      }
-    }
+    "rules": {}
   },
   "browserslist": [
     "> 1%",
